@@ -13,7 +13,7 @@ export class AppComponent {
     @Input() menuItem: string
 
     menuItemClicked(menuItem: string) {
-        console.log(`menuItem: ${menuItem}`)
+        // console.log(`menuItem: ${menuItem}`)
         this.menuSelected = menuItem
     }
 
