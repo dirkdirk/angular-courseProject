@@ -1,15 +1,13 @@
-<app-header></app-header>
+<app-header (onMenuItemClicked)='menuItemClicked($event)'></app-header>
 
 <div id='body-div' class='containter'>
     <div class='row'>
         <div class='col-md-12'>
 
-            <app-recipes></app-recipes>
-            <app-shopping-list></app-shopping-list>
+            <app-recipes *ngIf='menuSelected === "recipes"'></app-recipes>
+
+            <app-shopping-list *ngIf='menuSelected === "shopping"'></app-shopping-list>
 
         </div>
     </div>
 </div>
-
-<!-- <app-recipe-item></app-recipe-item>
-<app-shopping-edit></app-shopping-edit> -->
