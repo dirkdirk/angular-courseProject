@@ -10,25 +10,31 @@ import { Subject } from 'rxjs'
 })
 export class RecipeService {
     recipesChanged = new Subject<Recipe[]>()
+    private recipes: Recipe[] = []
 
-    private recipes: Recipe[] = [
-        new Recipe('Schnitzel',
-                   'Yum yum yummy!',
-                   'https://c.pxhere.com/images/d0/54/15a09b734bfd3e341434c2191a94-1417896.jpg!d',
-                    [
-                        new Ingredient('Meat', 1),
-                        new Ingredient('Fries', 20)
-                    ]),
-        new Recipe('Big Fat Burger',
-                   'Heart Attack City',
-                   'https://c.pxhere.com/images/d0/54/15a09b734bfd3e341434c2191a94-1417896.jpg!d',
-                    [
-                        new Ingredient('Buns', 2),
-                        new Ingredient('Meat', 1)
-                    ])
-    ]
+    // private recipes: Recipe[] = [
+    //     new Recipe('Schnitzel',
+    //                'Yum yum yummy!',
+    //                'https://c.pxhere.com/images/d0/54/15a09b734bfd3e341434c2191a94-1417896.jpg!d',
+    //                 [
+    //                     new Ingredient('Meat', 1),
+    //                     new Ingredient('Fries', 20)
+    //                 ]),
+    //     new Recipe('Big Fat Burger',
+    //                'Heart Attack City',
+    //                'https://c.pxhere.com/images/d0/54/15a09b734bfd3e341434c2191a94-1417896.jpg!d',
+    //                 [
+    //                     new Ingredient('Buns', 2),
+    //                     new Ingredient('Meat', 1)
+    //                 ])
+    // ]
 
     constructor(private slService: ShoppingListService) {}
+
+    setRecipes(recipes: Recipe[]) {
+        this.recipes = recipes
+        this.recipesChanged.next(this.recipes.slice())
+    }
 
     getRecipes() {
         return this.recipes.slice()
