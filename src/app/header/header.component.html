@@ -8,18 +8,23 @@
         <div class='navbar-default'>
 
             <ul class='nav navbar-nav'>
-                <li routerLinkActive='active'><a routerLink='/recipes'>Recipes</a></li>
+                <li routerLinkActive='active' *ngIf='isAuthenticated'><a routerLink='/recipes'>Recipes</a></li>
                 <li routerLinkActive='active'><a routerLink='/shopping-list'>Shopping List</a></li>
             </ul>
 
             <ul class='nav navbar-nav navbar-right'>
-                <li class='dropdown' appDropdown>
+
+                <li *ngIf='isAuthenticated'><a class='cursor-pointer'>Logout</a></li>
+                <li routerLinkActive='active' *ngIf='!isAuthenticated'><a routerLink='/auth'>Login</a></li>
+
+                <li class='dropdown' appDropdown *ngIf='isAuthenticated'>
                     <a class='dropdown-toggle cursor-pointer' role='button'>Manage <span class='caret'></span></a>
                     <ul class='dropdown-menu'>
                         <li><a class='cursor-pointer' (click)='onSaveData()'>Save Data</a></li>
                         <li><a class='cursor-pointer' (click)='onFetchData()'>Fetch Data</a></li>
                     </ul>
                 </li>
+
             </ul>
 
         </div>
