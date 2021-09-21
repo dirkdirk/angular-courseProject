@@ -24,6 +24,7 @@ export class AuthService {
     fbEmailSignInURL = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${this.fbAPIkey}`
 
     user = new BehaviorSubject<User>(null)
+    tokenExpirationTimer: any
 
     constructor(
         private http: HttpClient,
@@ -64,14 +65,54 @@ export class AuthService {
         )
     }
 
+    autoLogin() {
+        console.log('--> auth.service.ts -- autoLogin()')
+        const userData: {
+            email               : string;
+            id                  : string;
+            _token              : string;
+            _tokenExpirationDate: string;
+        } = JSON.parse( localStorage.getItem('userData') )
+
+        if (!userData) { return }
+
+        const tokenExDate        = new Date(userData._tokenExpirationDate)
+        const tokenExDateMiliSec = tokenExDate.getTime()
+        const nowMiliSec         = new Date().getTime()
+
+        const loadedUser = new User(
+            userData.email,
+            userData.id,
+            userData._token,
+            tokenExDate
+        )
+
+        if (loadedUser.token) {
+            this.user.next(loadedUser)
+            const expirationDuration = tokenExDateMiliSec - nowMiliSec
+            this.autoLogout(expirationDuration)
+        }
+
+    }
+
     logout() {
         this.user.next(null)
         this.router.navigate(['/auth'])
+        localStorage.removeItem('userData')
+        if (this.tokenExpirationTimer) clearTimeout(this.tokenExpirationTimer)
+        this.tokenExpirationTimer = null
+    }
+
+    autoLogout(expirationDuration: number) {
+        console.log('--> auth.service.ts -- autoLogout()')
+        console.log(`expirationDuration: ${expirationDuration}`)
+        this.tokenExpirationTimer = setTimeout(() => this.logout(), expirationDuration)
     }
 
     private handleAuthentication(responseData: AuthResponseData) {
         console.log('--> auth.service.ts -- handleAuthentication()')
-        const expirationDate = new Date(new Date().getTime() + (+responseData.expiresIn * 1000))
+        const expiresInMiliSec = +responseData.expiresIn * 1000
+        const expirationDate = new Date(new Date().getTime() + expiresInMiliSec)
         const newUser = new User(
             responseData.email,
             responseData.localId,
@@ -79,6 +120,8 @@ export class AuthService {
             expirationDate
         )
         this.user.next(newUser)
+        this.autoLogout(expiresInMiliSec)
+        localStorage.setItem( 'userData', JSON.stringify(newUser) )
     }
 
     private handleError(errorResponse: HttpErrorResponse) {
