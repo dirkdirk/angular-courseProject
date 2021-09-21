@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http'
 import { Injectable } from '@angular/core'
-import { Subject, throwError } from 'rxjs'
+import { BehaviorSubject, throwError } from 'rxjs'
 import { catchError, tap } from 'rxjs/operators'
 
 import { User } from '../models/user.model'
@@ -21,14 +21,14 @@ export class AuthService {
     fbSignUpURL = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${this.fbAPIkey}`
     fbEmailSignInURL = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${this.fbAPIkey}`
 
-    user = new Subject<User>()
+    user = new BehaviorSubject<User>(null)
 
     constructor(
         private http: HttpClient
     ) {}
 
     signup(email: string, pw: string) {
-        console.log('auth.service.ts --> signup()')
+        console.log('--> auth.service.ts -- signup()')
         return this.http
         .post<AuthResponseData>(
             this.fbSignUpURL,
@@ -45,7 +45,7 @@ export class AuthService {
     }
 
     login(email:string, pw: string) {
-        console.log('auth.service.ts --> login()')
+        console.log('--> auth.service.ts -- login()')
         return this.http
         .post<AuthResponseData>(
             this.fbEmailSignInURL,
@@ -62,7 +62,7 @@ export class AuthService {
     }
 
     private handleAuthentication(responseData: AuthResponseData) {
-        console.log('auth.service.ts --> handleAuthentication()')
+        console.log('--> auth.service.ts -- handleAuthentication()')
         const expirationDate = new Date(new Date().getTime() + (+responseData.expiresIn * 1000))
         const newUser = new User(
             responseData.email,
@@ -74,7 +74,7 @@ export class AuthService {
     }
 
     private handleError(errorResponse: HttpErrorResponse) {
-        console.log('auth.service.ts --> handleError()')
+        console.log('--> auth.service.ts -- handleError()')
         let errorMessage = 'An unknown error occurred'
         if (!errorResponse.error || !errorResponse.error.error || !errorResponse.error.error.message) {
             return throwError(errorMessage)

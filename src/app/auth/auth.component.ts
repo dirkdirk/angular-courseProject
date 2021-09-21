@@ -27,7 +27,7 @@ export class AuthComponent implements OnInit {
     }
 
     onSubmit(authForm: NgForm) {
-        console.log('auth.component.ts --> onSubmit()')
+        console.log('--> auth.component.ts -- onSubmit()')
         console.log('authForm.value')
         console.log(authForm.value)
         if (!authForm.valid) { return }
@@ -52,8 +52,8 @@ export class AuthComponent implements OnInit {
                 this.router.navigate(['/recipes'])
             },
             errorResponse => {
-                console.log('errorResponse')
-                console.log(errorResponse)
+                console.log('--> authForm.component.ts -- authObs.subscribe()')
+                console.log(`errorResponse: ${errorResponse}`)
                 this.errorMessage = errorResponse
                 this.isLoading = false
             }
