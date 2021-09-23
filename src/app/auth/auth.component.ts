@@ -33,17 +33,13 @@ export class AuthComponent implements OnInit {
         if (!authForm.valid) { return }
         const email = authForm.value.email
         const pw    = authForm.value.password
-
         let authObs: Observable<AuthResponseData>
-
         this.isLoading = true
-
         if (this.isLoginMode) {
             authObs = this.authService.login(email, pw)
         } else {
             authObs = this.authService.signup(email, pw)
         }
-
         authObs.subscribe(
             responseData => {
                 console.log('responseData')
@@ -58,8 +54,11 @@ export class AuthComponent implements OnInit {
                 this.isLoading = false
             }
         )
-
         authForm.reset()
+    }
+
+    onHandleError() {
+        this.errorMessage = null
     }
 
 }

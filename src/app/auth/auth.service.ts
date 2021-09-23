@@ -4,6 +4,7 @@ import { Router } from '@angular/router'
 
 import { BehaviorSubject, throwError } from 'rxjs'
 import { catchError, tap } from 'rxjs/operators'
+import { environment } from 'src/environments/environment'
 
 import { User } from '../models/user.model'
 
@@ -19,7 +20,7 @@ export interface AuthResponseData {
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-    fbAPIkey    = 'AIzaSyC3Rx11qQiDw7R4t9PCjKL8ms-sLPEO1Lk'
+    fbAPIkey    = environment.fbAPIKey
     fbSignUpURL = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${this.fbAPIkey}`
     fbEmailSignInURL = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${this.fbAPIkey}`
 
@@ -141,10 +142,10 @@ export class AuthService {
                 errorMessage = 'We have blocked all requests from this device due to unusual activity. Try again later.'
                 break
             case 'INVALID_PASSWORD':
-                errorMessage = 'The email or password are incorrect.'
+                errorMessage = 'The email or password is incorrect.'
                 break
             case 'EMAIL_NOT_FOUND':
-                errorMessage = 'The email or password are incorrect.'
+                errorMessage = 'The email or password is incorrect.'
                 break
         }
         return throwError(errorMessage)
